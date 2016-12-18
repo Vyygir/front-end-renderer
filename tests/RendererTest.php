@@ -1,9 +1,8 @@
 <?php
-use PHPUnit\Framework\TestCase;
 use FER\Renderer;
 use FER\Routes\Route;
 
-class RendererTest extends TestCase {
+class RendererTest extends PHPUnit_Framework_TestCase {
 	private $renderer;
 
 	public function __construct() {

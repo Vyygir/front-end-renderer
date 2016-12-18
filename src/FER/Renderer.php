@@ -71,17 +71,19 @@ class Renderer {
 		$output = array();
 		$request = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/';
 		$template = $this->routes->match($request);
+		$parts_before = $this->getParts(self::PART_BEFORE);
+		$parts_after = $this->getParts(self::PART_AFTER);
 
-		if (!empty($this->getParts(self::PART_BEFORE))) {
-			foreach ($this->getParts(self::PART_BEFORE) as $_part) {
+		if (!empty($parts_before)) {
+			foreach ($parts_before as $_part) {
 				$output[] = file_get_contents($_part);
 			}
 		}
 
 		$output[] = file_get_contents($template);
 
-		if (!empty($this->getParts(self::PART_AFTER))) {
-			foreach ($this->getParts(self::PART_AFTER) as $_part) {
+		if (!empty($parts_after)) {
+			foreach ($parts_after as $_part) {
 				$output[] = file_get_contents($_part);
 			}
 		}

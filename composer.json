@@ -1,0 +1,19 @@
+{
+    "name": "vyygir/front-end-renderer",
+    "type": "library",
+    "description": "Some classes to help you in creating static, front-end builds",
+    "license": "Apache-2.0",
+    "require": {
+        "php": ">=5.2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "5.5.*"
+    },
+    "autoload": {
+        "classmap": [
+            "src/"
+        ],
+        "psr-4": {"FER\\": "src/FER/"}
+    },
+    "include-path": ["src/"]
+}

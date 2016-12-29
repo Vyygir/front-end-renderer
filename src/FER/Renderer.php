@@ -83,7 +83,7 @@ class Renderer {
 		}
 
 		ob_start();
-		require_once $_part;
+		require_once $template;
 		$output[] = ob_get_clean();
 
 		if (!empty($parts_after)) {

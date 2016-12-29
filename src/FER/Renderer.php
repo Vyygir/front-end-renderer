@@ -76,15 +76,21 @@ class Renderer {
 
 		if (!empty($parts_before)) {
 			foreach ($parts_before as $_part) {
-				$output[] = file_get_contents($_part);
+				ob_start();
+				require $_part;
+				$output[] = ob_get_clean();
 			}
 		}
 
-		$output[] = file_get_contents($template);
+		ob_start();
+		require_once $_part;
+		$output[] = ob_get_clean();
 
 		if (!empty($parts_after)) {
 			foreach ($parts_after as $_part) {
-				$output[] = file_get_contents($_part);
+				ob_start();
+				require $_part;
+				$output[] = ob_get_clean();
 			}
 		}
 

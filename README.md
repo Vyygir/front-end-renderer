@@ -83,6 +83,52 @@ $renderer->buffer();
 echo $renderer->render();
 ```
 
+### Parts in a template ###
+
+You can also define parts that should be loaded in a template with a self-specified tag:
+
+```php
+// autoload anything from the installed Composer packages (including FER)
+require_once 'vendor/autoload.php';
+
+// create the FER instance
+$renderer = new FER\Renderer;
+
+// create the initial route
+$renderer->addRoute('/', 'home.php');
+
+// add the header before the main template, and the footer after
+$renderer->addPart('header.php', $renderer::PART_BEFORE);
+$renderer->addPart('footer.php', $renderer::PART_AFTER);
+
+// add a part in the template that can be shown by putting "##SIDEBAR##" in the template
+$renderer->addPart('sidebar.php', $renderer::PART_IN_TEMPLATE, '##SIDEBAR##');
+
+// buffer everything loaded in and output it
+$renderer->buffer();
+echo $renderer->render();
+```
+
+And here's what your `home.php` file might look like:
+
+```html
+<main>
+	<article>
+		This is the main content
+	</article>
+
+	##SIDEBAR##
+</main>
+```
+
+Where your `sidebar.php` file would contain whatever you need it to:
+
+```html
+<aside>
+	This is the sidebar content
+</aside>
+```
+
 ### Different directories ###
 
 ```php

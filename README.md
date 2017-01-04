@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/Vyygir/front-end-renderer.svg?branch=master)](https://travis-ci.org/Vyygir/front-end-renderer)
+[![Coverage Status](https://coveralls.io/repos/github/Vyygir/front-end-renderer/badge.svg?branch=master)](https://coveralls.io/github/Vyygir/front-end-renderer?branch=master)
 
 # Front End Renderer #
 

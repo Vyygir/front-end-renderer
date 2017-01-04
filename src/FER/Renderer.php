@@ -7,6 +7,7 @@ use FER\Routes\Route as Route;
 class Renderer {
 	const PART_BEFORE = 'before';
 	const PART_AFTER = 'after';
+	const PART_IN_TEMPLATE = 'in_template';
 
 	private $routes;
 	private $options;
@@ -44,11 +45,20 @@ class Renderer {
 		return $this->routes;
 	}
 
-	public function addPart($path, $location) {
+	public function addPart($path, $location, $tag = '') {
+		if ($location == self::PART_IN_TEMPLATE && !$tag) {
+			trigger_error('No tag specified for in-template part');
+		}
+
 		$_path = sprintf('%s/%s', $this->options['parts_dir'], $path);
 
 		if (file_exists($_path)) {
-			$this->parts[$location][] = $_path;
+			$partData = ($location == self::PART_IN_TEMPLATE) ? array(
+				'tag' => $tag,
+				'path' => $_path
+			) : $_path;
+
+			$this->parts[$location][] = $partData;
 			return true;
 		}
 
@@ -71,11 +81,12 @@ class Renderer {
 		$output = array();
 		$request = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/';
 		$template = $this->routes->match($request);
-		$parts_before = $this->getParts(self::PART_BEFORE);
-		$parts_after = $this->getParts(self::PART_AFTER);
+		$partsBefore = $this->getParts(self::PART_BEFORE);
+		$partsAfter = $this->getParts(self::PART_AFTER);
+		$partsInTemplate = $this->getParts(self::PART_IN_TEMPLATE);
 
-		if (!empty($parts_before)) {
-			foreach ($parts_before as $_part) {
+		if (!empty($partsBefore)) {
+			foreach ($partsBefore as $_part) {
 				ob_start();
 				require $_part;
 				$output[] = ob_get_clean();
@@ -84,10 +95,23 @@ class Renderer {
 
 		ob_start();
 		require_once $template;
-		$output[] = ob_get_clean();
+		$templateContent = ob_get_clean();
 
-		if (!empty($parts_after)) {
-			foreach ($parts_after as $_part) {
+		if (!empty($partsInTemplate)) {
+			foreach ($partsInTemplate as $_part) {
+				if (strpos($templateContent, $_part['tag']) !== false) {
+					ob_start();
+					require $_part['path'];
+					$partContent = ob_get_clean();
+					$templateContent = str_replace($_part['tag'], $partContent, $templateContent);
+				}
+			}
+		}
+
+		$output[] = $templateContent;
+
+		if (!empty($partsAfter)) {
+			foreach ($partsAfter as $_part) {
 				ob_start();
 				require $_part;
 				$output[] = ob_get_clean();
